@@ -1,23 +1,91 @@
-import logo from './logo.svg';
 import './App.css';
+import { useState } from 'react';
+import firebase from "firebase/app";
+import "firebase/auth";
+import firebaseConfig from './firebase.config';
+
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+} else {
+  firebase.app(); // if already initialized, use that one
+}
 
 function App() {
+  const [user, setUser] = useState({})
+  const googleProvider = new firebase.auth.GoogleAuthProvider();
+  var fbProvider = new firebase.auth.FacebookAuthProvider();
+  var githubProvider = new firebase.auth.GithubAuthProvider();
+
+  const handleGoogleSignIn = () => {
+    firebase.auth()
+      .signInWithPopup(googleProvider)
+      .then((result) => {
+        var credential = result.credential;
+        var token = credential.accessToken;
+        var user = result.user;
+        setUser(user);
+        console.log(user);
+
+      }).catch((error) => {
+        // Handle Errors here.
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        var email = error.email;
+        var credential = error.credential;
+        console.log(errorCode, errorMessage, email, credential);
+      });
+  }
+
+  const handleFacebookSignIn = () => {
+    firebase
+      .auth()
+      .signInWithPopup(fbProvider)
+      .then((result) => {
+        var credential = result.credential;
+        var user = result.user;
+        var accessToken = credential.accessToken;
+        setUser(user);
+        console.log("FB user", user);
+      })
+      .catch((error) => {
+        // Handle Errors here.
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        var email = error.email;
+        var credential = error.credential;
+        console.log("error", errorCode, errorMessage, email, credential);
+      });
+  }
+
+  const handleGithubSignIn = () => {
+    firebase
+      .auth()
+      .signInWithPopup(githubProvider)
+      .then((result) => {
+        var credential = result.credential;
+        var token = credential.accessToken;
+        var user = result.user;
+        setUser(user);
+        console.log("Github",user);
+        
+      }).catch((error) => {
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        var email = error.email;
+        var credential = error.credential;
+        console.log(errorCode, errorMessage, email, credential);
+      });
+  }
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <button onClick={handleGoogleSignIn}>Sign in using Google</button>
+      <br />
+      <button onClick={handleFacebookSignIn}>Sign in using Facebook</button>
+      <br />
+      <button onClick={handleGithubSignIn}>Sign in using GitHub</button>
+      <h3>User Name: {user.displayName}</h3>
+      <p>User Image URL: {user.photoURL}</p>
+      <img src={user.photoURL} alt="" />
     </div>
   );
 }
