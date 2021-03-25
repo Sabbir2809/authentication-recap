@@ -20,19 +20,13 @@ function App() {
     firebase.auth()
       .signInWithPopup(googleProvider)
       .then((result) => {
-        var credential = result.credential;
-        var token = credential.accessToken;
         var user = result.user;
         setUser(user);
         console.log(user);
 
       }).catch((error) => {
-        // Handle Errors here.
-        var errorCode = error.code;
         var errorMessage = error.message;
-        var email = error.email;
-        var credential = error.credential;
-        console.log(errorCode, errorMessage, email, credential);
+        console.log(errorMessage);
       });
   }
 
@@ -41,19 +35,13 @@ function App() {
       .auth()
       .signInWithPopup(fbProvider)
       .then((result) => {
-        var credential = result.credential;
         var user = result.user;
-        var accessToken = credential.accessToken;
         setUser(user);
         console.log("FB user", user);
       })
       .catch((error) => {
-        // Handle Errors here.
-        var errorCode = error.code;
         var errorMessage = error.message;
-        var email = error.email;
-        var credential = error.credential;
-        console.log("error", errorCode, errorMessage, email, credential);
+        console.log(errorMessage);
       });
   }
 
@@ -62,18 +50,13 @@ function App() {
       .auth()
       .signInWithPopup(githubProvider)
       .then((result) => {
-        var credential = result.credential;
-        var token = credential.accessToken;
         var user = result.user;
         setUser(user);
         console.log("Github",user);
         
       }).catch((error) => {
-        var errorCode = error.code;
         var errorMessage = error.message;
-        var email = error.email;
-        var credential = error.credential;
-        console.log(errorCode, errorMessage, email, credential);
+        console.log(errorMessage);
       });
   }
   return (
